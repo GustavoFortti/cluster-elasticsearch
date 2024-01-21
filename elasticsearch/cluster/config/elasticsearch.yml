@@ -1,5 +1,4 @@
 cluster.name: "dataindex"
-network.host: 0.0.0.0
 
 #----------------------- BEGIN SECURITY AUTO CONFIGURATION -----------------------
 #
@@ -27,10 +26,8 @@ xpack.security.transport.ssl:
 
 # Node role settings
 node.name: node-1
-node.master: true
-node.data: true
-node.ingest: true
-network.host: 192.168.0.100  # Ou o IP específico da máquina
+node.roles: [master, data, ingest]
+network.host: 0.0.0.0  # Ou o IP específico da máquina
 
 # Cluster discovery settings
 discovery.seed_hosts: ["192.168.0.100", "192.168.0.101"]
