@@ -26,11 +26,13 @@ xpack.security.transport.ssl:
 
 # Node role settings
 node.name: node-1
+# node.name: node-2
 node.roles: [master, data, ingest]
 network.host: 0.0.0.0  # Ou o IP específico da máquina
 
 # Cluster discovery settings
 discovery.seed_hosts: ["192.168.0.100", "192.168.0.101"]
+# discovery.seed_hosts: ["192.168.0.101", "192.168.0.100"]
 cluster.initial_master_nodes: ["node-1", "node-2"]
 
 # Path settings for data and logs
