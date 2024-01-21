@@ -18,6 +18,7 @@ function ngrok() {
     docker-compose -f docker-compose-ngrok.yml up -d
 
     # curl http://localhost:5000/api/tunnels
+    
 }
 
 elasticsearch

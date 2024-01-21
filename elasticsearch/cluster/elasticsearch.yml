@@ -1,4 +1,4 @@
-cluster.name: "docker-cluster"
+cluster.name: "dataindex"
 network.host: 0.0.0.0
 
 #----------------------- BEGIN SECURITY AUTO CONFIGURATION -----------------------
@@ -26,20 +26,22 @@ xpack.security.transport.ssl:
 #----------------------- END SECURITY AUTO CONFIGURATION -------------------------
 
 # Node role settings
+node.name: node-1
 node.master: true
 node.data: true
 node.ingest: true
+network.host: 192.168.0.100  # Ou o IP específico da máquina
 
 # Cluster discovery settings
-discovery.seed_hosts: ["host1", "host2"]
+discovery.seed_hosts: ["192.168.0.100", "192.168.0.101"]
 cluster.initial_master_nodes: ["node-1", "node-2"]
 
 # Path settings for data and logs
-path.data: /path/to/data
-path.logs: /path/to/logs
+# path.data: /path/to/data
+# path.logs: /path/to/logs
 
 # Monitoring settings
 xpack.monitoring.collection.enabled: true
 
 # Repository settings for backup
-path.repo: ["/path/to/repo"]
+# path.repo: ["/path/to/repo"]
