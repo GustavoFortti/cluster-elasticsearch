@@ -6,7 +6,7 @@ function elasticsearch() {
     echo "Elasticsearch LOADING..."
     sudo sysctl -w vm.max_map_count=262144
 
-    docker-compose up -d
+    docker-compose -f docker-compose-node-1.yml up -d
 
     status=$?
     if [ $status -ne 0 ]; then

@@ -1,0 +1,36 @@
+version: '3.9'
+
+networks:
+  elasticsearch:
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    container_name: elasticsearch-node-2
+    hostname: elasticsearch-node-2
+    restart: unless-stopped
+    environment:
+      - cluster.name=dataindex
+      - node.name=node-2
+      - discovery.seed_hosts=192.168.0.100,192.168.0.101
+      - cluster.initial_master_nodes=node-1,node-2
+      - network.host=0.0.0.0
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+      - ./path/to/certs:/usr/share/elasticsearch/config/certs
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost:9200"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+volumes:
+  elasticsearch-data:
+    driver: local

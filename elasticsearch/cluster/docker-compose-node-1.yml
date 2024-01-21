@@ -7,14 +7,21 @@ networks:
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
-    container_name: elasticsearch-node
-    hostname: elasticsearch-node
+    container_name: elasticsearch-node-1
+    hostname: elasticsearch-node-1
     restart: unless-stopped
+    environment:
+      - cluster.name=dataindex
+      - node.name=node-1
+      - discovery.seed_hosts=192.168.0.100,192.168.0.101
+      - cluster.initial_master_nodes=node-1,node-2
+      - network.host=0.0.0.0
+      - xpack.security.enabled=false
     volumes:
-      - elasticsearch-data:/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     networks:
       - elasticsearch
     healthcheck:
