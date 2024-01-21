@@ -13,13 +13,12 @@ services:
     environment:
       - cluster.name=dataindex
       - node.name=node-2
-      - discovery.seed_hosts=192.168.0.100,192.168.0.101
+      - discovery.seed_hosts=192.168.0.100
       - cluster.initial_master_nodes=node-1,node-2
       - network.host=0.0.0.0
       - xpack.security.enabled=false
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
-      - ./path/to/certs:/usr/share/elasticsearch/config/certs
     ports:
       - "9200:9200"
       - "9300:9300"
