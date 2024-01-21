@@ -12,7 +12,6 @@ services:
     restart: unless-stopped
     volumes:
       - elasticsearch-data:/elasticsearch/data
-      - /config/certs:/usr/share/elasticsearch/config/certs
     ports:
       - 9200:9200
       - 9300:9300
