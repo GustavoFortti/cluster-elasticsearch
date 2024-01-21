@@ -1,0 +1,1 @@
+docker exec -it elasticsearch-node bin/elasticsearch-setup-passwords auto -b

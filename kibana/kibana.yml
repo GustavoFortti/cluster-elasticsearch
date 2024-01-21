@@ -1,0 +1,10 @@
+#
+# ** THIS IS AN AUTO-GENERATED FILE **
+#
+
+# Default Kibana configuration for docker target
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+elasticsearch.hosts: ["https://6e54-54-39-132-231.ngrok-free.app/"]
+elasticsearch.username: "kibana"
+elasticsearch.password: "z93wemKu7O8Ie9aD1BUR"

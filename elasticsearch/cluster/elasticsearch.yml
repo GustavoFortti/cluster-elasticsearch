@@ -1,0 +1,45 @@
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+
+#----------------------- BEGIN SECURITY AUTO CONFIGURATION -----------------------
+#
+# The following settings, TLS certificates, and keys have been automatically      
+# generated to configure Elasticsearch security features on 21-01-2024 18:36:06
+#
+# --------------------------------------------------------------------------------
+
+# Enable security features
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: true
+
+# Enable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
+
+# Enable encryption and mutual authentication between cluster nodes
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  keystore.path: certs/transport.p12
+  truststore.path: certs/transport.p12
+#----------------------- END SECURITY AUTO CONFIGURATION -------------------------
+
+# Node role settings
+node.master: true
+node.data: true
+node.ingest: true
+
+# Cluster discovery settings
+discovery.seed_hosts: ["host1", "host2"]
+cluster.initial_master_nodes: ["node-1", "node-2"]
+
+# Path settings for data and logs
+path.data: /path/to/data
+path.logs: /path/to/logs
+
+# Monitoring settings
+xpack.monitoring.collection.enabled: true
+
+# Repository settings for backup
+path.repo: ["/path/to/repo"]

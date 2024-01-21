@@ -1,0 +1,39 @@
+version: '3.3'
+
+networks:
+  elasticsearch_network:
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    container_name: elasticsearch-master
+    restart: unless-stopped
+    hostname: elasticsearch-master
+    environment:
+      - "discovery.type=single-node"
+    volumes:
+      - elasticsearch-data:/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elasticsearch_network
+
+  ngrok_elasticsearch:
+    image: wernight/ngrok
+    restart: unless-stopped
+    hostname: ngrok_elasticsearch
+    container_name: ngrok_elasticsearch
+    command: >
+      ngrok http https://elasticsearch-master:9200 -authtoken=2Z6Asmj0nFfKfpOkf3m7LhZwLkr_2HJXUhBNqydH8Q8mjozQv
+    networks:
+      - elasticsearch_network
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5000:4040"
+
+volumes:
+  elasticsearch-data:
+    driver: local

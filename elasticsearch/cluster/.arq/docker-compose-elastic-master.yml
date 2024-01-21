@@ -1,0 +1,42 @@
+version: '3.1'
+
+networks:
+  elasticsearch:
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    restart: unless-stopped
+    container_name: elasticsearch-master
+    hostname: elasticsearch-master
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elasticsearch
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+      - ./config/elasticsearch-master.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - ES_PATH_CONF=/usr/share/elasticsearch/config
+
+  nginx_elasticsearch:
+    image: nginx:latest
+    restart: unless-stopped
+    container_name: nginx_elasticsearch
+    hostname: elasticsearch
+    ports:
+      - "8080:80"
+      - "8443:443"
+    networks:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+
+volumes:
+  elasticsearch-data:
+    driver: local
+  

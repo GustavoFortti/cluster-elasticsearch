@@ -1,0 +1,18 @@
+version: '3.1'
+
+networks:
+  elasticsearch_network:
+    driver: bridge
+
+services:
+  ngrok_elasticsearch:
+    image: wernight/ngrok
+    restart: unless-stopped
+    container_name: ngrok_elasticsearch_2
+    hostname: ngrok_elasticsearch_2
+    command: >
+      ngrok http http://elasticsearch -authtoken=${NGROK_TOKEN_2}
+    networks:
+      - elasticsearch_network
+    ports:
+      - "5200:4040"

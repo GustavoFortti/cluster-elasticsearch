@@ -1,0 +1,30 @@
+version: '3.9'
+
+networks:
+  elasticsearch:
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    container_name: elasticsearch-node
+    hostname: elasticsearch-node
+    restart: unless-stopped
+    environment:
+      - "discovery.type=single-node"
+    volumes:
+      - elasticsearch-data:/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost:9200"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+volumes:
+  elasticsearch-data:
+    driver: local
