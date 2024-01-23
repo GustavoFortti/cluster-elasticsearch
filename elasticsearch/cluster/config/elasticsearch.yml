@@ -28,7 +28,8 @@ xpack.security.transport.ssl:
 node.name: node-1
 # node.name: node-2
 node.roles: [master, data, ingest]
-network.host: 0.0.0.0  # Ou o IP específico da máquina
+network.host: 0.0.0.0
+http:port: 9200
 
 # Cluster discovery settings
 discovery.seed_hosts: ["192.168.0.100", "192.168.0.101"]

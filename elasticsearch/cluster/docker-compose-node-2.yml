@@ -11,14 +11,21 @@ services:
     hostname: elasticsearch-node-2
     restart: unless-stopped
     environment:
-      - cluster.name=dataindex
+      - cluster.name=dataindex-elk
       - node.name=node-2
-      - discovery.seed_hosts=192.168.0.100
+      - discovery.seed_hosts=192.168.0.100,192.168.0.101
       - cluster.initial_master_nodes=node-1,node-2
       - network.host=0.0.0.0
-      - xpack.security.enabled=false
+      - http.port=9200
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.client_authentication=required
+      - xpack.security.transport.ssl.keystore.path=/usr/share/elasticsearch/config/elastic-certificates.p12
+      - xpack.security.transport.ssl.truststore.path=/usr/share/elasticsearch/config/elastic-certificates.p12
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
+      - ./config/certs/elastic-certificates.p12:/usr/share/elasticsearch/config/elastic-certificates.p12
     ports:
       - "9200:9200"
       - "9300:9300"
