@@ -7,7 +7,7 @@ function elasticsearch() {
     sudo sysctl -w vm.max_map_count=262144
 
     docker-compose -f docker-compose-node-1.yml up -d
-
+    docker logs elasticsearch-node-1 -f
     status=$?
     if [ $status -ne 0 ]; then
         echo "Error Elasticsearch"
