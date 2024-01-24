@@ -1,0 +1,32 @@
+# ---------------------- Cluster Settings ----------------------
+cluster.name: es-datashelf
+network.host: 0.0.0.0
+node.name: es-node-2
+node.roles: [master, data, ingest]
+cluster.initial_master_nodes:
+  - es-node-1
+  - es-node-2
+discovery.seed_hosts:
+  - 192.168.0.100
+
+# ---------------------- Network and HTTP ----------------------
+http.port: 9200 
+
+# ---------------------- Security Settings ----------------------
+xpack.security.enabled: true
+
+# SSL settings for HTTP
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.key: certs/es-node-2/es-node-2.key
+xpack.security.http.ssl.certificate: certs/es-node-2/es-node-2.crt
+xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
+
+# SSL settings for Transport layer
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.key: certs/es-node-2/es-node-2.key
+xpack.security.transport.ssl.certificate: certs/es-node-2/es-node-2.crt
+xpack.security.transport.ssl.certificate_authorities: certs/ca/ca.crt
+
+# ---------------------- Other Settings ----------------------
+bootstrap.memory_lock: true

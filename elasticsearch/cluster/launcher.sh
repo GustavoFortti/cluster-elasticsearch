@@ -1,25 +1,33 @@
 #!/bin/bash
 
-export NGROK_TOKEN="2b6H4dh1PBgx1o1l1Xl0W9cZhl5_2AvNdHVqTaeurHPrcSiMM"
+source ./scripts/utils.sh
 
-function elasticsearch() {
-    echo "Elasticsearch LOADING..."
-    sudo sysctl -w vm.max_map_count=262144
+export ES_VERSION=8.10.4
+message "ES_VERSION=$ES_VERSION"
+message "ES_CLUSTER=$ES_CLUSTER"
+message "ES_NODE=$ES_NODE"
+message "NODE_IP=$NODE_IP"
+message "ES_SEEDS=$ES_SEEDS"
 
-    docker-compose -f docker-compose-node-2.yml up -d
-    docker logs elasticsearch-node-2 -f
-    status=$?
-    if [ $status -ne 0 ]; then
-        echo "Error Elasticsearch"
-        exit 1
-    fi
-}
+# bash ./setup/setup.sh
+cp -r ./setup/certs ./
+unzip -o ./certs/ca.zip -d ./certs/
+unzip -o ./certs/certs.zip -d ./certs/
 
-function ngrok() {
-    echo "ngrok LOADING..."
-    docker-compose -f docker-compose-ngrok.yml up -d
-    # curl http://localhost:5000/api/tunnels
-}
+# docker-compose down
+sudo sysctl -w vm.max_map_count=262144
+docker-compose up -d
+docker logs es-node-1 -f
+docker-compose down 
 
-elasticsearch
-# ngrok
+# loading_bar 30
+
+# LOCAL_CERTS_PATH=$(pwd)/setup/certs
+# LOCAL_CONFIG_PATH=/usr/share/elasticsearch/config
+# CONFIG_PATH=/usr/share/elasticsearch/config
+# CERTS_PATH=/usr/share/elasticsearch/config/certs
+
+# for file in $LOCAL_CERTS_PATH/*; do
+#     docker cp "$file" "$ES_NODE:$CERTS_PATH/"
+# done
+# docker cp $LOCAL_CONFIG_PATH/$ES_NODE.yml $ES_NODE:$CONFIG_PATH/

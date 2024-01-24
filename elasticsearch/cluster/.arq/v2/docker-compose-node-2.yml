@@ -28,7 +28,6 @@ services:
       - xpack.security.http.ssl.keystore.path=/usr/share/elasticsearch/config/certs/elastic-certificates.p12
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
-      - ./config/certs/elastic-certificates.p12:/usr/share/elasticsearch/config/certs/elastic-certificates.p12
     ports:
       - "9200:9200"
       - "9300:9300"

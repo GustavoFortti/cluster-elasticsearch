@@ -1,0 +1,52 @@
+version: '3.9'
+
+networks:
+  elasticsearch:
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION}
+    container_name: ${ES_NODE}
+    hostname: ${ES_NODE}
+    restart: unless-stopped
+    environment:
+      - node.name=${ES_NODE}
+      - cluster.name=${ES_CLUSTER}
+      - cluster.initial_master_nodes=es-node-1,es-node-2
+      - discovery.seed_hosts=${ES_SEEDS}
+      - ELASTIC_PASSWORD=123456
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/${ES_NODE}/${ES_NODE}.key
+      - xpack.security.http.ssl.certificate=certs/${ES_NODE}/${ES_NODE}.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/${ES_NODE}/${ES_NODE}.key
+      - xpack.security.transport.ssl.certificate=certs/${ES_NODE}/${ES_NODE}.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:/usr/share/elasticsearch/config/certs
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost:9200"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+volumes:
+  elasticsearch-data:
+    driver: local
