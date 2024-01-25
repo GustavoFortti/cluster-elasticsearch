@@ -1,1 +1,0 @@
-docker-compose -f $(pwd)/cluster/docker-compose-elastic-master.yml up

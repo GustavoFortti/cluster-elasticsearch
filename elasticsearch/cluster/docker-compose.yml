@@ -29,6 +29,7 @@ services:
       - xpack.security.transport.ssl.certificate=certs/${ES_NODE}/${ES_NODE}.crt
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=basic
     ulimits:
       memlock:
         soft: -1
