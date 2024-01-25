@@ -1,36 +1,78 @@
 version: '3.9'
 
 services:
-  elasticsearch:
+  es-node-1:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
-    container_name: ${ES_NODE}
-    hostname: ${ES_NODE}
-    restart: unless-stopped
+    hostname: es-node-1
     environment:
-      - node.name=${ES_NODE}
-      - cluster.name=${ES_CLUSTER}
+      - node.name=es-node-1
+      - cluster.name=es-datashelf
+      - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
-      - discovery.seed_hosts=192.168.0.102,192.168.0.103
       - ELASTIC_PASSWORD=123456
       - network.host=0.0.0.0
       - bootstrap.memory_lock=true
       - xpack.security.enabled=false
+      - http.port=9200
+    volumes:
+      - es-node-1-data:/usr/share/elasticsearch/data
+    networks:
+      - es_cluster
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage-sys
+
+  es-node-2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    hostname: es-node-2
+    environment:
+      - node.name=es-node-2
+      - cluster.name=es-datashelf
+      - discovery.seed_hosts=es-node-1,es-node-2
+      - cluster.initial_master_nodes=es-node-1,es-node-2
+      - ELASTIC_PASSWORD=123456
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - http.port=9200
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+      - es-node-2-data:/usr/share/elasticsearch/data
     networks:
-      - es_network
-      
+      - es_cluster
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage
+
+  ngrok_elasticsearch:
+    image: wernight/ngrok
+    hostname: ngrok_elasticsearch
+    command: >
+      ngrok http http://es-node-1:9200 -authtoken=2Z6Asmj0nFfKfpOkf3m7LhZwLkr_2HJXUhBNqydH8Q8mjozQv
+    networks:
+      - es_cluster
+    depends_on:
+      - es-node-1
+    ports:
+      - "5000:4040"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage-sys
+        
 volumes:
-  elasticsearch-data:
-    driver: local
+  es-node-1-data:
+  es-node-2-data:
 
 networks:
-  es_network:
+  es_cluster:
     external: true
