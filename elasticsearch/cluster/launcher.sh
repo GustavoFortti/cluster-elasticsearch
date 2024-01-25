@@ -12,6 +12,7 @@ message "ES_SEEDS=$ES_SEEDS"
 cp -r ./setup/certs ./
 unzip -o ./certs/ca.zip -d ./certs/
 unzip -o ./certs/certs.zip -d ./certs/
+chmod -R 777 ./certs/
 
 # docker-compose down
 sudo sysctl -w vm.max_map_count=262144
