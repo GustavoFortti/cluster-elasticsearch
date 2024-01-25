@@ -14,7 +14,7 @@ services:
       - node.name=${ES_NODE}
       - cluster.name=${ES_CLUSTER}
       - cluster.initial_master_nodes=es-node-1,es-node-2
-      - discovery.seed_hosts=${ES_SEEDS}
+      - discovery.seed_hosts=192.168.0.102,192.168.0.101
       - ELASTIC_PASSWORD=123456
       - network.host=0.0.0.0
       - bootstrap.memory_lock=true
