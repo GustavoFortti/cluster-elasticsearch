@@ -7,7 +7,7 @@ cluster.initial_master_nodes:
   - es-node-1
   - es-node-2
 discovery.seed_hosts:
-  - 192.168.0.100
+  - 192.168.0.102
 
 # ---------------------- Network and HTTP ----------------------
 http.port: 9200 
