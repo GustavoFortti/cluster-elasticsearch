@@ -1,53 +1,104 @@
 version: '3.9'
 
-networks:
-  elasticsearch:
-    driver: bridge
-
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION}
-    container_name: ${ES_NODE}
-    hostname: ${ES_NODE}
-    restart: unless-stopped
+  es-node-1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    hostname: es-node-1
     environment:
-      - node.name=${ES_NODE}
-      - cluster.name=${ES_CLUSTER}
+      - node.name=es-node-1
+      - cluster.name=es-datashelf
+      - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
-      - discovery.seed_hosts=192.168.0.102,192.168.0.101
       - ELASTIC_PASSWORD=123456
       - network.host=0.0.0.0
+      - http.port=9200
       - bootstrap.memory_lock=true
       - xpack.security.enabled=true
       - xpack.security.http.ssl.enabled=true
-      - xpack.security.http.ssl.key=certs/${ES_NODE}/${ES_NODE}.key
-      - xpack.security.http.ssl.certificate=certs/${ES_NODE}/${ES_NODE}.crt
+      - xpack.security.http.ssl.key=certs/es-node-1/es-node-1.key
+      - xpack.security.http.ssl.certificate=certs/es-node-1/es-node-1.crt
       - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.http.ssl.verification_mode=certificate
       - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.key=certs/${ES_NODE}/${ES_NODE}.key
-      - xpack.security.transport.ssl.certificate=certs/${ES_NODE}/${ES_NODE}.crt
+      - xpack.security.transport.ssl.key=certs/es-node-1/es-node-1.key
+      - xpack.security.transport.ssl.certificate=certs/es-node-1/es-node-1.crt
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=basic
+    volumes:
+      - es-node-1-data:/usr/share/elasticsearch/data
+      - certs:/usr/share/elasticsearch/config/certs
+    networks:
+      - es_cluster
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - ./certs:/usr/share/elasticsearch/config/certs
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - elasticsearch
-    healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:9200"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage-sys
 
+  es-node-2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    hostname: es-node-2
+    environment:
+      - node.name=es-node-2
+      - cluster.name=es-datashelf
+      - discovery.seed_hosts=es-node-1,es-node-2
+      - cluster.initial_master_nodes=es-node-1,es-node-2
+      - ELASTIC_PASSWORD=123456
+      - network.host=0.0.0.0
+      - http.port=9200
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/es-node-2/es-node-2.key
+      - xpack.security.http.ssl.certificate=certs/es-node-2/es-node-2.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/es-node-2/es-node-2.key
+      - xpack.security.transport.ssl.certificate=certs/es-node-2/es-node-2.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=basic
+    volumes:
+      - es-node-2-data:/usr/share/elasticsearch/data
+      - certs:/usr/share/elasticsearch/config/certs
+    networks:
+      - es_cluster
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage
+
+  ngrok_elasticsearch:
+    image: wernight/ngrok
+    hostname: ngrok_elasticsearch
+    command: >
+      ngrok http http://es-node-1:9200 -authtoken=2Z6Asmj0nFfKfpOkf3m7LhZwLkr_2HJXUhBNqydH8Q8mjozQv
+    networks:
+      - es_cluster
+    depends_on:
+      - es-node-1
+    ports:
+      - "5000:4040"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage-sys
+        
 volumes:
-  elasticsearch-data:
-    driver: local
+  es-node-1-data:
+  es-node-2-data:
+  certs:
+    external: true
+    
+networks:
+  es_cluster:
+    external: true
