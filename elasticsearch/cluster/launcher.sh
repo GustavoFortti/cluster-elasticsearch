@@ -5,10 +5,24 @@ source ./scripts/utils.sh
 export ES_VERSION=8.10.4
 message "ES_VERSION=$ES_VERSION"
 
-function gen_certs() {
+function create_certs() {
+    message "Creating certs"
     bash ./setup/setup.sh
-    cp -r ./setup/certs ./
-    unzip -o ./certs/ca.zip -d ./certs/
-    unzip -o ./certs/certs.zip -d ./certs/
-    chmod -R 777 ./certs/
+}
+
+function register_certs() {
+    message "Register certs"
+    openssl enc -aes-256-cbc -d -pbkdf2 -in certs.tar.gz.enc -out certs.tar.gz
+    tar -xzvf certs.tar.gz
+
+    CERTS_DIR=/etc/elasticsearch/certs
+
+    if [ ! -e "$CERTS_DIR" ]; then
+        sudo mkdir -p $CERTS_DIR/
+        sudo cp ./setup/certs/$ES_NODE $CERTS_DIR
+        sudo cp ./setup/certs/ca $CERTS_DIR/
+    fi
+
+    rm -r ./setup/certs
+    rm -r ./certs.tar.gz
 }

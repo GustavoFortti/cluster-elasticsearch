@@ -1,3 +1,11 @@
 instances:
   - name: es-node-1
   - name: es-node-2
+  - name: es-node-3
+  - name: es-node-4
+  - name: es-node-5
+  - name: es-node-6
+  - name: es-node-7
+  - name: es-node-8
+  - name: es-node-9
+  - name: es-node-10

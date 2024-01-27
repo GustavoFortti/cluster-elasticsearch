@@ -5,6 +5,6 @@
 # Default Kibana configuration for docker target
 server.host: "0.0.0.0"
 server.shutdownTimeout: "5s"
-elasticsearch.hosts: ["https://6e54-54-39-132-231.ngrok-free.app/"]
+elasticsearch.hosts: ["https://es-node-1:9200"]
 elasticsearch.username: "kibana"
-elasticsearch.password: "z93wemKu7O8Ie9aD1BUR"
+elasticsearch.password: "lgpjhAxCrg49UUCAF1DO"

@@ -9,7 +9,7 @@ services:
       - cluster.name=es-datashelf
       - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=123456
+      - node.roles=master,data,ingest
       - network.host=0.0.0.0
       - http.port=9200
       - bootstrap.memory_lock=true
@@ -27,7 +27,7 @@ services:
       - xpack.license.self_generated.type=basic
     volumes:
       - es-node-1-data:/usr/share/elasticsearch/data
-      - certs:/usr/share/elasticsearch/config/certs
+      - /etc/elasticsearch/certs:/usr/share/elasticsearch/config/certs
     networks:
       - es_cluster
     ulimits:
@@ -47,7 +47,7 @@ services:
       - cluster.name=es-datashelf
       - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=123456
+      - node.roles=master,data,ingest
       - network.host=0.0.0.0
       - http.port=9200
       - bootstrap.memory_lock=true
@@ -65,7 +65,7 @@ services:
       - xpack.license.self_generated.type=basic
     volumes:
       - es-node-2-data:/usr/share/elasticsearch/data
-      - certs:/usr/share/elasticsearch/config/certs
+      - /etc/elasticsearch/certs:/usr/share/elasticsearch/config/certs
     networks:
       - es_cluster
     ulimits:
@@ -77,11 +77,11 @@ services:
         constraints:
           - node.hostname == mage
 
-  ngrok_elasticsearch:
+  es-ngrok-1:
     image: wernight/ngrok
-    hostname: ngrok_elasticsearch
+    hostname: es-ngrok-1
     command: >
-      ngrok http http://es-node-1:9200 -authtoken=2Z6Asmj0nFfKfpOkf3m7LhZwLkr_2HJXUhBNqydH8Q8mjozQv
+      ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-els-1.ngrok.app
     networks:
       - es_cluster
     depends_on:
@@ -92,12 +92,25 @@ services:
       placement:
         constraints:
           - node.hostname == mage-sys
-        
+
+  es-ngrok-2:
+    image: wernight/ngrok
+    hostname: es-ngrok-2
+    command: >
+      ngrok http https://es-node-2:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-els-2.ngrok.app
+    networks:
+      - es_cluster
+    depends_on:
+      - es-node-2
+    ports:
+      - "5100:4040"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage
 volumes:
   es-node-1-data:
   es-node-2-data:
-  certs:
-    external: true
     
 networks:
   es_cluster:

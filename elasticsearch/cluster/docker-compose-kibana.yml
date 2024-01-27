@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  ki-node-1:
+    image: docker.elastic.co/kibana/kibana:8.10.4
+    hostname: ki-node-1
+    networks:
+      - es_cluster
+    volumes:
+      - /etc/elasticsearch/certs:/usr/share/kibana/config/certs
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ki-node-1-data:/usr/share/kibana/data
+    environment:
+      - ELASTICSEARCH_HOSTS=https://es-node-1:9200
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/kibana/config/certs/ca/ca.crt
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage-sys
+
+  ki-ngrok-1:
+    image: wernight/ngrok
+    hostname: ki-ngrok-1
+    command: >
+      ngrok http https://ki-node-1:5601 -authtoken=${NGROK_TOKEN_KIBANA}
+    networks:
+      - es_cluster
+    depends_on:
+      - ki-node-1
+    ports:
+      - "5200:4040"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == mage-sys
+
+volumes:
+  ki-node-1-data:
+    
+networks:
+  es_cluster:
+    external: true
