@@ -32,8 +32,8 @@ function elasticsearch_setup() {
     tar -czvf ./certs.tar.gz ./setup/certs
 
     openssl enc -aes-256-cbc -salt -pbkdf2 -in ./certs.tar.gz -out certs.tar.gz.enc
-    # rm -f ./certs.tar.gz
-    # rm -r  $PATH_LOCAL/certs
+    rm -f ./certs.tar.gz
+    rm -r  $PATH_LOCAL/certs
 
     docker rm $SETUP_CONTAINER --force
     docker-compose -f $PATH_LOCAL/docker-compose.yml down
