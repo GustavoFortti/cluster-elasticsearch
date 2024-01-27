@@ -6,7 +6,7 @@ services:
     hostname: es-node-1
     environment:
       - node.name=es-node-1
-      - cluster.name=
+      - cluster.name=dataindex-elk
       - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
       - node.roles=master,data,ingest
@@ -44,7 +44,7 @@ services:
     hostname: es-node-2
     environment:
       - node.name=es-node-2
-      - cluster.name=
+      - cluster.name=dataindex-elk
       - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
       - node.roles=master,data,ingest
