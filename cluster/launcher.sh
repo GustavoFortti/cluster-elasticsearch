@@ -27,4 +27,3 @@ function register_certs() {
     rm -r ./certs.tar.gz
 }
 
-create_certs
