@@ -83,8 +83,7 @@ services:
     environment:
       - NGROK_TOKEN=${NGROK_TOKEN_ES}
     command: >
-      sh -c 'echo "NGROK_TOKEN_ES value is: ${NGROK_TOKEN_ES} ${NGROK_TOKEN}" &&
-           ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-1.ngrok.app'
+      ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-1.ngrok.app'
     networks:
       - es_cluster
     depends_on:
@@ -102,8 +101,7 @@ services:
     environment:
       - NGROK_TOKEN=${NGROK_TOKEN_ES}
     command: >
-      sh -c 'echo "NGROK_TOKEN_ES value is: ${NGROK_TOKEN_ES} ${NGROK_TOKEN}" &&
-           ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-1.ngrok.app'
+      ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-2.ngrok.app'
     networks:
       - es_cluster
     depends_on:
