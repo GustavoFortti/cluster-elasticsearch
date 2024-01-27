@@ -81,7 +81,7 @@ services:
     image: wernight/ngrok
     hostname: es-ngrok-1
     command: >
-      ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-els-1.ngrok.app
+      ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-1.ngrok.app
     networks:
       - es_cluster
     depends_on:
@@ -97,7 +97,7 @@ services:
     image: wernight/ngrok
     hostname: es-ngrok-2
     command: >
-      ngrok http https://es-node-2:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-els-2.ngrok.app
+      ngrok http https://es-node-2:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-2.ngrok.app
     networks:
       - es_cluster
     depends_on:
