@@ -80,7 +80,7 @@
 ```
     docker service ls
     
-    curl -X GET "https://dataindex-els-1.ngrok.app/_cluster/health" -u elastic:now4Eg9Es5I0qpNyyFpa -H 'Content-Type: application/json'
+    curl -X GET "https://dataindex-els-1.ngrok.app/_cluster/health" -u elastic:SENHA -H 'Content-Type: application/json'
     
-    curl -X GET "https://dataindex-els-1.ngrok.app/_cluster/allocation/explain" -u elastic:now4Eg9Es5I0qpNyyFpa -H 'Content-Type: application/json'
+    curl -X GET "https://dataindex-els-1.ngrok.app/_cluster/allocation/explain" -u elastic:SENHA -H 'Content-Type: application/json'
 ```
