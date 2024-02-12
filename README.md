@@ -12,6 +12,11 @@
       - name: es-node-3
 ```
 
+# Mudar hostname no docker-compose.yml
+```
+    - node.hostname == hostname
+```
+
 # Criar certificados
 ```
     bash launcher.sh create_certs
@@ -26,9 +31,8 @@
 
 # Cadastrar variaveis de ambiente no nó
 ```
-    export ES_NODE="es-node-*"
-    export NGROK_TOKEN_ES="TOKEN"
-    export NGROK_TOKEN_KIBANA="TOKEN"
+    export ES_NODE="es-node-1"
+    export NGROK_TOKEN_ES="token"
 ```
 
 # Configurar uso de memoria do Elastic no nó
@@ -39,6 +43,13 @@
 # Registrar certificado no nó
 ```
     bash launcher.sh register_certs
+
+    sudo openssl enc -aes-256-cbc -d -pbkdf2 -in certs.tar.gz.enc -out certs.tar.gz
+    sudo tar -xzvf certs.tar.gz
+    sudo mkdir -p /etc/elasticsearch/certs
+    sudo cp -r ./setup/certs/$ES_NODE /etc/elasticsearch/certs
+    sudo cp -r ./setup/certs/ca /etc/elasticsearch/certs
+
 ```
 
 ## Registro Docker Swarm
@@ -65,9 +76,17 @@
 
 ```
 
+# Teste o NGROK
+```
+    docker run --name teste-ngrok -p 4040:4040 -e NGROK_TOKEN=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz wernight/ngrok ngrok http 80 -authtoken=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz --region=us --hostname=__DOMINIO__
+```
+
+
 # Deploy do cluster
 ```
-    docker stack deploy -c docker-compose.yml es_cluster
+    sudo docker network create --driver=overlay --attachable es_cluster
+
+    sudo docker stack deploy -c docker-compose.yml es_cluster
 ```
 
 # Deletar cluster
@@ -75,12 +94,17 @@
     docker stack rm es_cluster 
 ```
 
+# Gerar senhas do Elastic
+```
+    elasticsearch-setup-passwords auto -b 
+```
+
 # Verificar sistema
 
 ```
     docker service ls
     
-    curl -X GET "https://dataindex-els-1.ngrok.app/_cluster/health" -u elastic:SENHA -H 'Content-Type: application/json'
+    curl -X GET "https://__DOMINIO__/_cluster/health" -u elastic:SENHA -H 'Content-Type: application/json'
     
-    curl -X GET "https://dataindex-els-1.ngrok.app/_cluster/allocation/explain" -u elastic:SENHA -H 'Content-Type: application/json'
+    curl -X GET "https://__DOMINIO__/_cluster/allocation/explain" -u elastic:SENHA -H 'Content-Type: application/json'
 ```
