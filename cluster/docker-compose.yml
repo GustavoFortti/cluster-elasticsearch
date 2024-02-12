@@ -77,41 +77,6 @@ services:
         constraints:
           - node.hostname == ns565591
 
-  es-ngrok-1:
-    image: wernight/ngrok
-    hostname: es-ngrok-1
-    environment:
-      - NGROK_TOKEN=${NGROK_TOKEN_ES}
-    command: >
-      ngrok http https://es-node-1:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-1.ngrok.app
-    networks:
-      - es_cluster
-    depends_on:
-      - es-node-1
-    ports:
-      - "5000:4040"
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == ns558722
-
-  es-ngrok-2:
-    image: wernight/ngrok
-    hostname: es-ngrok-2
-    environment:
-      - NGROK_TOKEN=${NGROK_TOKEN_ES}
-    command: >
-      ngrok http https://es-node-2:9200 -authtoken=${NGROK_TOKEN_ES} --region=us --hostname=dataindex-elk-2.ngrok.app
-    networks:
-      - es_cluster
-    depends_on:
-      - es-node-2
-    ports:
-      - "5100:4040"
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == ns565591
 volumes:
   es-node-1-data:
   es-node-2-data:
