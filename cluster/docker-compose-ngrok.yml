@@ -10,8 +10,6 @@ services:
       ngrok http https://es-node-1:9200 -authtoken=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz --region=us --hostname=dataindex-elk-node-1.ngrok.app
     networks:
       - es_cluster
-    depends_on:
-      - es-node-1
     ports:
       - "5000:4040"
     deploy:
@@ -28,8 +26,6 @@ services:
       ngrok http https://es-node-2:9200 -authtoken=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz --region=us --hostname=dataindex-elk-node-2.ngrok.app
     networks:
       - es_cluster
-    depends_on:
-      - es-node-2
     ports:
       - "5100:4040"
     deploy:
