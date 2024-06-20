@@ -7,7 +7,7 @@ services:
     environment:
       - NGROK_TOKEN=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz
     command: >
-      ngrok http https://es-node-1:9200 -authtoken=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz --region=us --hostname=dataindex-elk-1.ngrok.app
+      ngrok http https://es-node-1:9200 -authtoken=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz --region=us --hostname=dataindex-elk-node-1.ngrok.app
     networks:
       - es_cluster
     depends_on:
@@ -25,7 +25,7 @@ services:
     environment:
       - NGROK_TOKEN=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz
     command: >
-      ngrok http https://es-node-2:9200 -authtoken=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz --region=us --hostname=dataindex-elk-2.ngrok.app
+      ngrok http https://es-node-2:9200 -authtoken=2Z8nEtOKM1hyByza71PY5cwyrvs_4b5qN3PMKwUGKUw43hsmz --region=us --hostname=dataindex-elk-node-2.ngrok.app
     networks:
       - es_cluster
     depends_on:

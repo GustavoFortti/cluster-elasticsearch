@@ -1,8 +1,15 @@
 ### Cluster elasticsearch
 
+
+
+
 # Conferir cluster/docker-compose.yml
     [] - Quantidade de nó elastic e ngrok
     [] - node.hostname que será executado cada nó
+
+# Configurar git
+    - git config --global user.name "gustavofortti"
+    - git config --global user.email "gustavofortti@gmail.com"
 
 # Cadastrar Nós no arquivo instances.yml ex:
 ```
@@ -108,3 +115,8 @@
     
     curl -X GET "https://__DOMINIO__/_cluster/allocation/explain" -u elastic:SENHA -H 'Content-Type: application/json'
 ```
+
+# Verificar sistema
+    comentar cluster.initial_master_nodes depois do cluster iniciado
+
+# nunca reiniciar o ngrok sem um step
