@@ -5,12 +5,6 @@
 - [ ] Check the number of Elasticsearch nodes and Ngrok instances.
 - [ ] Ensure `node.hostname` is configured for each node.
 
-## Configure Git
-```bash
-git config --global user.name "gustavofortti"
-git config --global user.email "gustavofortti@gmail.com"
-```
-
 ## Register Nodes in `instances.yml`
 Example:
 ```yaml
