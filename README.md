@@ -1,12 +1,17 @@
 
-# Elasticsearch Cluster Setup
+# 🧠 Elasticsearch Cluster with Docker and Ngrok
 
-## Verify `docker-compose.yml` Cluster Configuration
-- [ ] Check the number of Elasticsearch nodes and Ngrok instances.
-- [ ] Ensure `node.hostname` is configured for each node.
+This repository provides a setup for deploying an **Elasticsearch Cluster** using **Docker Swarm**, with secure communication via **TLS certificates** and external exposure through **Ngrok**.
 
-## Register Nodes in `instances.yml`
-Example:
+---
+
+## 📋 Setup Instructions
+
+### ✅ Step 1: Verify `docker-compose.yml` Configuration
+- Confirm the number of Elasticsearch nodes and Ngrok instances.
+- Ensure `node.name` and `node.hostname` are set for each node.
+
+### ✅ Step 2: Register Nodes in `instances.yml`
 ```yaml
 instances:
   - name: es-node-1
@@ -14,38 +19,43 @@ instances:
   - name: es-node-3
 ```
 
-## Update Hostname in `docker-compose.yml`
-```yaml
-- node.hostname == hostname
-```
+### ✅ Step 3: Match Hostnames
+Ensure the `node.hostname` in `docker-compose.yml` matches the actual hostname of each node.
 
-## Create Certificates
+---
+
+## 🔐 Certificate Generation and Registration
+
+### 🛠️ Create Certificates
 ```bash
 bash launcher.sh create_certs
 ```
 
-## Commit Certificates
+### 💾 Commit Generated Certificates
 ```bash
 git add .
 git commit -m "certificates generated"
 git push
 ```
 
-## Set Environment Variables for Each Node
+### 🌍 Set Environment Variables
 ```bash
 export ES_NODE="es-node-1"
 export NGROK_TOKEN_ES="your_token_here"
 ```
 
-## Configure Memory Usage for Elasticsearch
+### 🔧 Configure System Memory (Linux Only)
 ```bash
 echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
 ```
 
-## Register Certificate on Each Node
+### 📥 Register Certificates on Each Node
 ```bash
 bash launcher.sh register_certs
+```
 
+Manual steps if needed:
+```bash
 sudo openssl enc -aes-256-cbc -d -pbkdf2 -in certs.tar.gz.enc -out certs.tar.gz
 sudo tar -xzvf certs.tar.gz
 sudo mkdir -p /etc/elasticsearch/certs
@@ -53,62 +63,95 @@ sudo cp -r ./setup/certs/$ES_NODE /etc/elasticsearch/certs
 sudo cp -r ./setup/certs/ca /etc/elasticsearch/certs
 ```
 
-## Docker Swarm Registration
+---
 
-### On the Master Node
+## 🐳 Docker Swarm Setup
+
+### Master Node
 ```bash
 docker swarm init
-
 docker swarm join-token manager -q
 ```
 
-### On the Worker Node
+### Worker Node
 ```bash
 docker swarm join --token YOUR_TOKEN MASTER_IP:PORT
+```
 
-# Verify nodes
+### Node Management
+```bash
 docker node ls
-
-# Promote a node to manager
 docker node promote <node-name>
-
-# Demote a manager node
 docker node demote <node-id>
 ```
 
-## Test Ngrok
+---
+
+## 🌐 Test Ngrok
 ```bash
-docker run --name test-ngrok -p 4040:4040 -e NGROK_TOKEN=your_token_here   wernight/ngrok ngrok http 80 --authtoken=your_token_here --region=us --hostname=your_domain_here
+docker run --name test-ngrok -p 4040:4040 -e NGROK_TOKEN=your_token_here \
+  wernight/ngrok ngrok http 80 --authtoken=your_token_here --region=us --hostname=your_domain_here
 ```
 
-## Deploy the Cluster
+---
+
+## 🚀 Deploy and Manage Cluster
+
+### Create Overlay Network
 ```bash
 sudo docker network create --driver=overlay --attachable es_cluster
+```
 
+### Deploy Cluster
+```bash
 sudo docker stack deploy -c docker-compose.yml es_cluster
 ```
 
-## Delete the Cluster
+### Delete Cluster
 ```bash
 docker stack rm es_cluster
 ```
 
-## Generate Elasticsearch Passwords
+---
+
+## 🔑 Generate Elasticsearch Passwords
 ```bash
 elasticsearch-setup-passwords auto -b
 ```
 
-## Verify the System
+---
+
+## ✅ System Verification
+
+### Check Services
 ```bash
 docker service ls
-
-curl -X GET "https://your_domain_here/_cluster/health"   -u elastic:your_password -H 'Content-Type: application/json'
-
-curl -X GET "https://your_domain_here/_cluster/allocation/explain"   -u elastic:your_password -H 'Content-Type: application/json'
 ```
 
-## Post-Cluster Setup
-- Comment out `cluster.initial_master_nodes` in the configuration after the cluster is initialized.
+### Check Cluster Health
+```bash
+curl -X GET "https://your_domain_here/_cluster/health" -u elastic:your_password -H 'Content-Type: application/json'
+```
 
-## Important Note
-- Never restart Ngrok without following the appropriate steps.
+### Explain Allocation
+```bash
+curl -X GET "https://your_domain_here/_cluster/allocation/explain" -u elastic:your_password -H 'Content-Type: application/json'
+```
+
+---
+
+## 🧩 Post-Setup
+
+- After initializing the cluster, **comment out `cluster.initial_master_nodes`** in the configuration.
+
+---
+
+## ⚠️ Important Note
+
+**Do not restart Ngrok** without redoing the steps to maintain hostname consistency and avoid downtime.
+
+---
+
+## 📄 License
+
+MIT License
